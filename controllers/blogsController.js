@@ -1,50 +1,86 @@
 import asyncHandler from "express-async-handler";
-import blogs from "../data/blogs.js";
-
-let { blogPosts } = blogs;
+import Blog from "../models/blogModel.js";
 
 const getAllBlogs = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "success",
-    blogPosts,
-  });
+  Blog.find()
+    .then((blogPosts) => {
+      res.status(200).json({
+        message: "success",
+        blogPosts,
+      });
+    })
+    .catch(({ message }) => {
+      res.status(500).json({ message });
+    });
 });
 
 const getBlog = asyncHandler((req, res) => {
   const { id } = req.params;
-  const blog = blogPosts[id - 1];
-  if (!blog) return res.status(404).json({ message: "No match found" });
-  res.status(200).json({
-    message: "success",
-    blog,
-  });
+  Blog.findById(id)
+    .then((blogPost) => {
+      if (!blogPost)
+        return res.status(404).json({
+          message: "Resource not found",
+        });
+      res.status(200).json({
+        message: "success",
+        blogPost,
+      });
+    })
+    .catch(({ message }) => {
+      res.status(500).json({ message });
+    });
 });
 
 const createBlog = asyncHandler((req, res) => {
-  const newBlog = req.body;
-  blogPosts = [...blogPosts, newBlog];
-  res.status(200).json({
-    message: "success",
-    blogPosts,
-  });
+  const newBlog = new Blog(req.body);
+  newBlog
+    .save()
+    .then((blog) => {
+      res.status(200).json({
+        message: "success",
+        blog,
+      });
+    })
+    .catch(({ message }) => {
+      res.status(500).json({ message });
+    });
 });
 
 const updateBlog = asyncHandler((req, res) => {
   const { id } = req.params;
   const updatedBlog = req.body;
-  blogPosts[id - 1] = updatedBlog;
-  res.status(200).json({
-    message: "success",
-    blogPosts,
-  });
+  Blog.findByIdAndUpdate(id, updatedBlog, { new: true })
+    .then((blogPost) => {
+      if (!blogPost)
+        return res.status(404).json({
+          message: "Resource not found",
+        });
+      res.status(200).json({
+        message: "success",
+        blogPost,
+      });
+    })
+    .catch(({ message }) => {
+      res.status(500).json({ message });
+    });
 });
 
 const deleteBlog = asyncHandler((req, res) => {
   const { id } = req.params;
-  blogPosts.splice(id - 1, 1);
-  res.status(200).json({
-    message: "success",
-    blogPosts,
-  });
+  Blog.findByIdAndDelete(id)
+    .then((blogPost) => {
+      if (!blogPost)
+        return res.status(404).json({
+          message: "Resource not found",
+        });
+      res.status(200).json({
+        message: "success",
+        blogPost,
+      });
+    })
+    .catch(({ message }) => {
+      res.status(500).json({ message });
+    });
 });
 export { getAllBlogs, getBlog, createBlog, updateBlog, deleteBlog };
