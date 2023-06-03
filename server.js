@@ -1,5 +1,4 @@
 import express from "express";
-const app = express();
 import { config } from "dotenv";
 import routes from "./routes/blogs.js";
 import bodyParser from "body-parser";
@@ -8,13 +7,14 @@ import { connectDB } from "./database/db.js";
 // Load .env file contents into process.env.
 config();
 
-// Connect to MongoDB
+// Connect to Database
 connectDB();
+
+const app = express();
 
 app.use(bodyParser.json());
 app.use("/api/v1", routes);
 
-const appName = process.env.APP_NAME;
-const port = process.env.port;
+const { APP_NAME, PORT } = process.env;
 
-app.listen(port, () => console.log(`${appName} is running on port ${port}`));
+app.listen(PORT, () => console.log(`${APP_NAME} is running on port ${PORT}`));

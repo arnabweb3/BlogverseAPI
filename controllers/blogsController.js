@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Blog from "../models/blogModel.js";
 
 const getAllBlogs = asyncHandler(async (req, res) => {
-  Blog.find()
+  await Blog.find()
     .then((blogPosts) => {
       res.status(200).json({
         message: "success",
@@ -14,9 +14,9 @@ const getAllBlogs = asyncHandler(async (req, res) => {
     });
 });
 
-const getBlog = asyncHandler((req, res) => {
+const getBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  Blog.findById(id)
+  await Blog.findById(id)
     .then((blogPost) => {
       if (!blogPost)
         return res.status(404).json({
@@ -32,14 +32,14 @@ const getBlog = asyncHandler((req, res) => {
     });
 });
 
-const createBlog = asyncHandler((req, res) => {
+const createBlog = asyncHandler(async (req, res) => {
   const newBlog = new Blog(req.body);
-  newBlog
+  await newBlog
     .save()
-    .then((blog) => {
+    .then((blogPost) => {
       res.status(200).json({
         message: "success",
-        blog,
+        blogPost,
       });
     })
     .catch(({ message }) => {
@@ -47,18 +47,20 @@ const createBlog = asyncHandler((req, res) => {
     });
 });
 
-const updateBlog = asyncHandler((req, res) => {
+const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updatedBlog = req.body;
-  Blog.findByIdAndUpdate(id, updatedBlog, { new: true })
+
+  await Blog.findByIdAndUpdate(id, updatedBlog, { new: true })
+    .exec()
     .then((blogPost) => {
-      if (!blogPost)
+      if (blogPost.length == 0)
         return res.status(404).json({
           message: "Resource not found",
         });
       res.status(200).json({
         message: "success",
-        blogPost,
+        blogPost: updatedBlog,
       });
     })
     .catch(({ message }) => {
@@ -66,9 +68,9 @@ const updateBlog = asyncHandler((req, res) => {
     });
 });
 
-const deleteBlog = asyncHandler((req, res) => {
+const deleteBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  Blog.findByIdAndDelete(id)
+  await Blog.findByIdAndDelete(id)
     .then((blogPost) => {
       if (!blogPost)
         return res.status(404).json({
