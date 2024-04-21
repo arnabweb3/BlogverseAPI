@@ -1,0 +1,18 @@
+name: First Workflow
+on: workflow_dispatch
+jobs:
+  first_job:
+    name: First Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Hello
+        run: echo "Hello"
+      - name: Print Welcome to Repository
+        run: echo "Welcome to " ${{github.event.repository.name}}
+      - name: Print Goodbye
+        run: |
+          echo "Goodbye "
+          echo "✋"
+        
+      
+    
