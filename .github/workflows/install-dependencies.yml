@@ -1,17 +1,21 @@
 name: Install Project Dependencies
 on: push
 jobs:
-    dependency-installation:
-        runs-on: ubuntu-latest
-        steps:
-           - name: Get-Code
-             uses: actions/checkout@v3
+  dependency-installation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get-Code
+        uses: actions/checkout@v3
 
-           - name: Install-NodeJS
-             uses: actions/setup-node@v3
-             with: 
-                node-version: 18.15.0
+      - name: Install-NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.15.0
 
-           - name: Install-Dependencies
-             run: pnpm ci
-            
+      - name: Install-Dependency-Manager
+        uses: pnpm/action-setup@v3
+        with:
+          version: 7.25.0
+
+      - name: Install-Dependencies
+        run: pnpm ci
