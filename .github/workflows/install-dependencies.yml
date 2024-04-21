@@ -18,4 +18,4 @@ jobs:
           version: 7.25.0
 
       - name: Install-Dependencies
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
