@@ -6,12 +6,17 @@ import {
   updateBlog,
   deleteBlog,
 } from "../controllers/blogsController.js";
+import checkEmptyRequestBody from "../middlewares/validations.js";
 
 const router = Router();
 
 router.get("/blogs", getAllBlogs);
 router.post("/blogs/create", createBlog);
 
-router.route("/blogs/:id").get(getBlog).put(updateBlog).delete(deleteBlog);
+router
+  .route("/blogs/:id")
+  .get(getBlog)
+  .put(checkEmptyRequestBody, updateBlog)
+  .delete(deleteBlog);
 
 export default router;

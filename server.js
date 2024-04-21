@@ -1,6 +1,7 @@
 import express from "express";
 import { config } from "dotenv";
-import routes from "./routes/blogs.js";
+import blogRoutes from "./routes/blogs.js";
+import userRoutes from "./routes/users.js";
 import bodyParser from "body-parser";
 import { connectDB } from "./database/db.js";
 
@@ -13,7 +14,8 @@ connectDB();
 const app = express();
 
 app.use(bodyParser.json());
-app.use("/api/v1", routes);
+app.use("/api/v1", blogRoutes);
+app.use("/api/v1", userRoutes);
 
 const { APP_NAME, PORT } = process.env;
 
